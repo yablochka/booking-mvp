@@ -166,7 +166,7 @@ def create_booking(new_booking: BookingCreate):
     
     bookings.append(booking)
     
-    selected_room["is_abailable"] = False
+    selected_room["is_available"] = False
     
     return {
         "message": "Xana bron qilindi",
