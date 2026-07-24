@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hotel Booking</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 20px 40px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 22px;
+        }
+
+        header span {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            margin-bottom: 18px;
+        }
+
+        .section-title h2 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .section-title p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 20px;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .room-number {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .room-type {
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .available {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .busy {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        button {
+            border: none;
+            border-radius: 9px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .primary-btn {
+            background: #111827;
+            color: white;
+            width: 100%;
+        }
+
+        .primary-btn:hover {
+            background: #374151;
+        }
+
+        .primary-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .danger-btn {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .danger-btn:hover {
+            background: #fecaca;
+        }
+
+        .form-section {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 24px;
+            margin-top: 35px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 18px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #111827;
+        }
+
+        .bookings-section {
+            margin-top: 35px;
+            margin-bottom: 50px;
+        }
+
+        .booking-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 17px;
+            margin-bottom: 12px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .booking-info h3 {
+            font-size: 17px;
+            margin-bottom: 6px;
+        }
+
+        .booking-info p {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+
+        .empty {
+            background: white;
+            border: 1px dashed #d1d5db;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            color: #6b7280;
+        }
+
+        .message {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            background: #111827;
+            color: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            display: none;
+            z-index: 100;
+        }
+
+        @media (max-width: 700px) {
+            header {
+                padding: 18px 20px;
+            }
+
+            header span {
+                display: none;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>StayRoom</h1>
+    <span>Minimal Hotel Booking System</span>
+</header>
+
+<main>
+
+    <section>
+        <div class="section-title">
+            <h2>Xanalar</h2>
+            <p>Ateldegi bar komnatalar dizimi</p>
+        </div>
+
+        <div id="roomsContainer" class="grid"></div>
+    </section>
+
+    <section class="form-section">
+        <div class="section-title">
+            <h2>Komnata bron qiliw</h2>
+            <p>Bos xana tanlap mag'liwmatlarinizdi kiritin':</p>
+        </div>
+
+        <div class="form-grid">
+            <select id="roomSelect">
+                <option value="">Xana tan'lan'</option>
+            </select>
+
+            <input
+                id="guestName"
+                type="text"
+                placeholder="A.F"
+            >
+
+            <input
+                id="phone"
+                type="text"
+                placeholder="Telefon nomer"
+            >
+        </div>
+
+        <button
+            class="primary-btn"
+            style="margin-top: 15px;"
+            onclick="createBooking()"
+        >
+            Bron qiliw
+        </button>
+    </section>
+
+    <section class="bookings-section">
+        <div class="section-title">
+            <h2>Bronlar</h2>
+            <p>Aktiv bronlar dizimi</p>
+        </div>
+
+        <div id="bookingsContainer"></div>
+    </section>
+
+</main>
+
+<div id="message" class="message"></div>
+
+<script>
+    const API_URL = "https://booking-mvp.up.railway.app";
+
+    let rooms = [];
+    let bookings = [];
+
+
+    async function loadRooms() {
+        try {
+            const response = await fetch(`${API_URL}/rooms`);
+
+            if (!response.ok) {
+                throw new Error("Komnata shiqpadi");
+            }
+
+            rooms = await response.json();
+
+            renderRooms();
+            renderRoomSelect();
+
+        } catch (error) {
+            showMessage(error.message);
+        }
+    }
+
+
+    async function loadBookings() {
+        try {
+            const response = await fetch(`${API_URL}/bookings`);
+
+            if (!response.ok) {
+                throw new Error("Bronlarni olishda xatolik");
+            }
+
+            bookings = await response.json();
+
+            renderBookings();
+
+        } catch (error) {
+            showMessage(error.message);
+        }
+    }
+
+
+    function renderRooms() {
+        const container = document.getElementById("roomsContainer");
+
+        container.innerHTML = "";
+
+        if (rooms.length === 0) {
+            container.innerHTML = `
+                <div class="empty">
+                    Xonalar topilmadi
+                </div>
+            `;
+            return;
+        }
+
+        rooms.forEach(room => {
+            const card = document.createElement("div");
+
+            card.className = "card";
+
+            card.innerHTML = `
+                <div class="room-number">
+                    Xona ${room.room_number}
+                </div>
+
+                <div class="room-type">
+                    ${room.room_type}
+                </div>
+
+                <div class="price">
+                    ${formatPrice(room.price)} so‘m
+                </div>
+
+                <div class="status ${
+                    room.is_available ? "available" : "busy"
+                }">
+                    ${room.is_available ? "Bos" : "Bos emes"}
+                </div>
+
+                <button
+                    class="primary-btn"
+                    ${room.is_available ? "" : "disabled"}
+                    onclick="selectRoom(${room.id})"
+                >
+                    ${
+                        room.is_available
+                            ? "Bron qiliw"
+                            : "Xana bronlang'an"
+                    }
+                </button>
+            `;
+
+            container.appendChild(card);
+        });
+    }
+
+
+    function renderRoomSelect() {
+        const select = document.getElementById("roomSelect");
+
+        select.innerHTML = `
+            <option value="">
+                KOmnata tan'lan
+            </option>
+        `;
+
+        const availableRooms = rooms.filter(
+            room => room.is_available
+        );
+
+        availableRooms.forEach(room => {
+            const option = document.createElement("option");
+
+            option.value = room.id;
+
+            option.textContent =
+                `${room.room_number} - ${room.room_type}`;
+
+            select.appendChild(option);
+        });
+    }
+
+
+    function renderBookings() {
+        const container =
+            document.getElementById("bookingsContainer");
+
+        container.innerHTML = "";
+
+        if (bookings.length === 0) {
+            container.innerHTML = `
+                <div class="empty">
+                    Bronlar usi jerde ko'rinedi
+                </div>
+            `;
+            return;
+        }
+
+        bookings.forEach(booking => {
+            const room = rooms.find(
+                room => room.id === booking.room_id
+            );
+
+            const item = document.createElement("div");
+
+            item.className = "booking-item";
+
+            item.innerHTML = `
+                <div class="booking-info">
+                    <h3>${booking.guest_name}</h3>
+
+                    <p>
+                        Komnata:
+                        ${
+                            room
+                                ? room.room_number
+                                : booking.room_id
+                        }
+                    </p>
+
+                    <p>
+                        Telefon: ${booking.phone}
+                    </p>
+                </div>
+
+                <button
+                    class="danger-btn"
+                    onclick="cancelBooking(${booking.id})"
+                >
+                    Bekor qilish
+                </button>
+            `;
+
+            container.appendChild(item);
+        });
+    }
+
+
+    function selectRoom(roomId) {
+        document.getElementById("roomSelect").value = roomId;
+
+        document.querySelector(".form-section")
+            .scrollIntoView({
+                behavior: "smooth"
+            });
+    }
+
+
+    async function createBooking() {
+        const roomId =
+            document.getElementById("roomSelect").value;
+
+        const guestName =
+            document.getElementById("guestName")
+                .value
+                .trim();
+
+        const phone =
+            document.getElementById("phone")
+                .value
+                .trim();
+
+        if (!roomId || !guestName || !phone) {
+            showMessage("Barcha maydonlarni to‘ldiring");
+            return;
+        }
+
+        const bookingData = {
+            room_id: Number(roomId),
+            guest_name: guestName,
+            phone: phone
+        };
+
+        try {
+            const response = await fetch(
+                `${API_URL}/bookings`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(bookingData)
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.detail || "Bron qilishda xatolik"
+                );
+            }
+
+            document.getElementById("roomSelect").value = "";
+            document.getElementById("guestName").value = "";
+            document.getElementById("phone").value = "";
+
+            showMessage(data.message);
+
+            await refreshData();
+
+        } catch (error) {
+            showMessage(error.message);
+        }
+    }
+
+
+    async function cancelBooking(bookingId) {
+        const confirmCancel = confirm(
+            "Bronni bekor qilmoqchimisiz?"
+        );
+
+        if (!confirmCancel) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `${API_URL}/bookings/${bookingId}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.detail || "Bronni bekor qilishda xatolik"
+                );
+            }
+
+            showMessage(data.message);
+
+            await refreshData();
+
+        } catch (error) {
+            showMessage(error.message);
+        }
+    }
+
+
+    async function refreshData() {
+        await loadRooms();
+        await loadBookings();
+    }
+
+
+    function formatPrice(price) {
+        return new Intl.NumberFormat("uz-UZ").format(price);
+    }
+
+
+    function showMessage(text) {
+        const message = document.getElementById("message");
+
+        message.textContent = text;
+        message.style.display = "block";
+
+        setTimeout(() => {
+            message.style.display = "none";
+        }, 3000);
+    }
+
+
+    refreshData();
+</script>
+
+</body>
+</html>
