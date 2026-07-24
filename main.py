@@ -60,7 +60,7 @@ class RoomUpdate(BaseModel):
 
 @app.get("/")
 def home(request: Request):
-    return templates.response(
+    return templates.TemplateResponse(
         request=request,
         name="index.html"
     )
