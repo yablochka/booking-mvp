@@ -1,6 +1,9 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from fastapi.templating import Jinja2Templates
+
+templates = Jinja2Templates(directory="templates")
 
 app = FastAPI()
 
@@ -56,10 +59,11 @@ class RoomUpdate(BaseModel):
     is_available: bool
 
 @app.get("/")
-def home():
-    return {
-        "message": "Hotel Booking API"
-    }
+def home(request: Request):
+    return templates.response(
+        request=request,
+        name="index.html"
+    )
     
 @app.get("/rooms")
 def get_rooms():
